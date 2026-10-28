@@ -39,7 +39,9 @@ zip_path = os.path.join(PROJECT_ROOT, "dataset.zip")
 if (not os.path.exists(test_img_dir) or len(os.listdir(test_img_dir) if os.path.exists(test_img_dir) else []) == 0) and os.path.exists(zip_path):
     try:
         with zipfile.ZipFile(zip_path, 'r') as z:
-            z.extractall(PROJECT_ROOT)
+            for member in z.namelist():
+                if not member.startswith("__MACOSX") and "/._" not in member:
+                    z.extract(member, PROJECT_ROOT)
     except Exception:
         pass
 
@@ -59,13 +61,13 @@ def resolve_model_path():
 def get_sample_image_path(filename):
     if not filename:
         return None
-    # 1. Direct sample_images directory
-    p1 = os.path.join(PROJECT_ROOT, "sample_images", filename)
-    if os.path.exists(p1):
+    # 1. Dataset test images directory
+    p1 = os.path.join(PROJECT_ROOT, "dataset/test/images", filename)
+    if os.path.exists(p1) and os.path.getsize(p1) > 1000:
         return p1
-    # 2. Dataset test images directory
-    p2 = os.path.join(PROJECT_ROOT, "dataset/test/images", filename)
-    if os.path.exists(p2):
+    # 2. Direct sample_images directory
+    p2 = os.path.join(PROJECT_ROOT, "sample_images", filename)
+    if os.path.exists(p2) and os.path.getsize(p2) > 1000:
         return p2
     return None
 
@@ -163,6 +165,8 @@ st.markdown("""
 # ==============================================================================
 with st.sidebar:
     logo_path = os.path.join(PROJECT_ROOT, "reports/iit_bhu_logo.png")
+    if not os.path.exists(logo_path):
+        logo_path = os.path.join(PROJECT_ROOT, "report/iit_bhu_logo.png")
     if os.path.exists(logo_path):
         st.image(logo_path, width=110)
     st.markdown("### **IIT (BHU) Varanasi**")
@@ -247,8 +251,11 @@ with tab_detect:
             chosen_filename = HIGHEST_CONFIDENCE_SAMPLES[chosen_label]
             sample_path = get_sample_image_path(chosen_filename)
             if sample_path and os.path.exists(sample_path):
-                input_image = Image.open(sample_path)
-                st.image(input_image, caption=f"Selected: {chosen_label}", use_container_width=True)
+                try:
+                    input_image = Image.open(sample_path)
+                    st.image(input_image, caption=f"Selected: {chosen_label}", use_container_width=True)
+                except Exception:
+                    st.warning("⚠️ Image preview failed to load. Please upload a PCB image directly below.")
             else:
                 st.info("Sample image preview loading. You can also upload a PCB photo below.")
         else:
