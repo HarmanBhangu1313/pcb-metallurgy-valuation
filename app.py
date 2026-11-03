@@ -85,7 +85,7 @@ HIGHEST_CONFIDENCE_SAMPLES = {
 
 # Page Configuration
 st.set_page_config(
-    page_title="PCB Metallurgical Valuation & Profit Engine (INR ₹) | IIT (BHU)",
+    page_title="AI and Machine Learning in Estimation and Isolation of Valuable Metals in E-Waste | IIT (BHU)",
     page_icon="⚗️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -206,7 +206,7 @@ prices_inr = market_data["prices_inr_per_g"]
 
 
 # Header
-st.markdown('<div class="main-title">⚗️ Machine Vision-Assisted E-Waste Characterization & Real-Time Metallurgical Valuation Platform</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">⚗️ AI and Machine Learning in Estimation and Isolation of Valuable Metals in E-Waste</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-title">Integrated YOLOv8 Deep Learning Detection • Stoichiometric Hydrometallurgical Extraction • Real-Time Commodity Spot Markets (INR ₹)</div>', unsafe_allow_html=True)
 
 # Live Status Banner (RUPEES ONLY)

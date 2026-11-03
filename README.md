@@ -1,4 +1,4 @@
-# ⚗️ Machine Vision-Assisted E-Waste Characterization & Real-Time Metallurgical Valuation Platform
+# ⚗️ AI and Machine Learning in Estimation and Isolation of Valuable Metals in E-Waste
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pcb-metallurgy-valuation-vqpsze4n8aq79bldnr5poe.streamlit.app/)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
