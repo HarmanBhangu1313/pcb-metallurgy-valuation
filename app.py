@@ -226,11 +226,9 @@ with col_s4:
 st.markdown("---")
 
 # Main Tabs
-tab_detect, tab_spotlight, tab_profile, tab_tickers = st.tabs([
+tab_detect, tab_spotlight = st.tabs([
     "🖥️ Live PCB Analyzer & Profit Valuation",
-    "🔍 Gold in IC & Component Profiler",
-    "📊 Detailed Metallurgical Breakdown",
-    "📈 Live Commodity Market Tickers"
+    "🔍 Gold in IC & Component Profiler"
 ])
 
 
@@ -428,17 +426,6 @@ with tab_detect:
         df_metals = pd.DataFrame(table_rows)
         st.dataframe(df_metals, use_container_width=True)
 
-        # Reagent Stoichiometry
-        rq = rep["reagents_stoichiometry"]
-        st.subheader("🧪 Stoichiometric Reagents Required for Extraction")
-        r_col1, r_col2, r_col3 = st.columns(3)
-        with r_col1:
-            st.info(f"**Conc. Nitric Acid (68% HNO₃):**\n\n**{rq['nitric_acid_68pct_ml_range']['min']} – {rq['nitric_acid_68pct_ml_range']['avg']} – {rq['nitric_acid_68pct_ml_range']['max']} mL**\n\n*(Dissolves Cu, Ni, Sn)*")
-        with r_col2:
-            st.info(f"**Aqua Regia Solution:**\n\n**{rq['aqua_regia_ml_range']['min']} – {rq['aqua_regia_ml_range']['avg']} – {rq['aqua_regia_ml_range']['max']} mL**\n\n*(Extracts Au wires & Pd)*")
-        with r_col3:
-            st.info(f"**Sodium Metabisulfite (Na₂S₂O₅):**\n\n**{rq['na2s2o5_precipitant_g_avg']:.3f} grams**\n\n*(Precipitates pure 24k Au sponge)*")
-
 
 # ==============================================================================
 # TAB 2: GOLD IN IC & COMPONENT RANGE PROFILER (RUPEES ONLY)
@@ -478,53 +465,3 @@ with tab_spotlight:
     df_prof = pd.DataFrame(prof_rows)
     st.dataframe(df_prof, use_container_width=True)
 
-
-# ==============================================================================
-# TAB 3: DETAILED COMPONENT BREAKDOWN
-# ==============================================================================
-with tab_profile:
-    st.subheader("📦 Standardized Component Assay Knowledge Base (Literature Benchmarks)")
-    st.caption("Derived from empirical characterization benchmarks: Havlík et al. (2010), Veit et al. (2005), Kaya (2016).")
-
-    db_rows = []
-    for k, v in COMPONENT_METALLURGY.items():
-        mass_r = v["mass_range_g"]
-        top_metals = []
-        for m, rng in v.get("elements_percent_range", {}).items():
-            top_metals.append(f"{m} ({rng['min']}–{rng['max']}%)")
-        db_rows.append({
-            "Component Class": k,
-            "Description": v["description"],
-            "Unit Mass Range (g)": f"{mass_r['min']} – {mass_r['avg']} – {mass_r['max']} g",
-            "Key Recoverable Elemental Fractions": ", ".join(top_metals)
-        })
-    st.dataframe(pd.DataFrame(db_rows), use_container_width=True)
-
-
-# ==============================================================================
-# TAB 4: LIVE COMMODITY MARKET TICKERS (RUPEES ONLY)
-# ==============================================================================
-with tab_tickers:
-    st.subheader("📈 Institutional Commodity Spot Prices (₹ INR)")
-    st.markdown("""
-    Real-time commodity prices dynamically fetched from global exchanges (COMEX, NYMEX, LME) converted directly into **Indian Rupees (₹)**:
-    """)
-
-    t_rows = [
-        {"Metal": "Gold (Au)", "Market Ticker": "GC=F (COMEX)", "Spot Price per Gram": f"₹{prices_inr['Au']:,.2f} / g", "Spot Price per 10 Grams": f"₹{prices_inr['Au']*10:,.2f}"},
-        {"Metal": "Silver (Ag)", "Market Ticker": "SI=F (COMEX)", "Spot Price per Gram": f"₹{prices_inr['Ag']:,.2f} / g", "Spot Price per 1 kg": f"₹{prices_inr['Ag']*1000:,.2f}"},
-        {"Metal": "Palladium (Pd)", "Market Ticker": "PA=F (NYMEX)", "Spot Price per Gram": f"₹{prices_inr['Pd']:,.2f} / g", "Spot Price per 10 Grams": f"₹{prices_inr['Pd']*10:,.2f}"},
-        {"Metal": "Platinum (Pt)", "Market Ticker": "PL=F (NYMEX)", "Spot Price per Gram": f"₹{prices_inr['Pt']:,.2f} / g", "Spot Price per 10 Grams": f"₹{prices_inr['Pt']*10:,.2f}"},
-        {"Metal": "Copper (Cu)", "Market Ticker": "HG=F (COMEX)", "Spot Price per Gram": f"₹{prices_inr['Cu']:,.2f} / g", "Spot Price per 1 kg": f"₹{prices_inr['Cu']*1000:,.2f}"},
-        {"Metal": "Aluminum (Al)", "Market Ticker": "ALI=F (COMEX)", "Spot Price per Gram": f"₹{prices_inr['Al']:,.2f} / g", "Spot Price per 1 kg": f"₹{prices_inr['Al']*1000:,.2f}"},
-        {"Metal": "Tin (Sn)", "Market Ticker": "LME Cash", "Spot Price per Gram": f"₹{prices_inr['Sn']:,.2f} / g", "Spot Price per 1 kg": f"₹{prices_inr['Sn']*1000:,.2f}"},
-        {"Metal": "Nickel (Ni)", "Market Ticker": "LME Cash", "Spot Price per Gram": f"₹{prices_inr['Ni']:,.2f} / g", "Spot Price per 1 kg": f"₹{prices_inr['Ni']*1000:,.2f}"}
-    ]
-    st.dataframe(pd.DataFrame(t_rows), use_container_width=True)
-
-    st.markdown("---")
-    st.subheader("💡 Free Market Feeds")
-    st.markdown("""
-    - **Real-Time Public Feeds:** Direct futures quotes converted to INR via live exchange rates.
-    - **Failsafe Offline Benchmark:** If the network is unavailable during a college presentation, the system automatically uses calibrated benchmark spot rates with zero crash risk.
-    """)
